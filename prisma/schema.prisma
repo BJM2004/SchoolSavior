@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== MODELS ====================
+
+model Promotion {
+  id    Int    @id @default(autoincrement())
+  annee String
+
+  etudiants Etudiant[]
+
+  @@map("promotion")
+}
+
+model Departement {
+  id  Int    @id @default(autoincrement())
+  nom String
+
+  axes      Axe[]
+  etudiants Etudiant[]
+  semestres Semestre[]
+
+  @@map("departement")
+}
+
+model Axe {
+  id            Int         @id @default(autoincrement())
+  nom           String
+  departementId Int
+  departement   Departement @relation(fields: [departementId], references: [id])
+
+  etudiants Etudiant[]
+
+  @@map("axe")
+}
+
+model Etudiant {
+  id             Int      @id @default(autoincrement())
+  matricule      String   @unique
+  nom            String
+  prenom         String
+  tel            String?
+  password       String
+  dateNaissance  DateTime @map("date_naissance")
+  dateInscription DateTime @default(now()) @map("date_inscription")
+
+  axeId         Int
+  axe           Axe         @relation(fields: [axeId], references: [id])
+  departementId Int
+  departement   Departement @relation(fields: [departementId], references: [id])
+  promotionId   Int
+  promotion     Promotion   @relation(fields: [promotionId], references: [id])
+
+  parents           AssEtudiantParent[]
+  matieres          AssMatiereEtudiant[]
+  dettes            Dette[]
+
+  @@map("etudiant")
+}
+
+model Parent {
+  id         Int     @id @default(autoincrement())
+  nom        String
+  prenom     String
+  tel        String?
+  adresse    String?
+  profession String?
+  password   String
+
+  etudiants AssEtudiantParent[]
+
+  @@map("parent")
+}
+
+model AssEtudiantParent {
+  etudiantId Int
+  etudiant   Etudiant @relation(fields: [etudiantId], references: [id])
+  parentId   Int
+  parent     Parent   @relation(fields: [parentId], references: [id])
+
+  @@id([etudiantId, parentId])
+  @@map("ass_etudiant_parent")
+}
+
+model Semestre {
+  id            Int         @id @default(autoincrement())
+  nom           String
+  annee         String
+  departementId Int
+  departement   Departement @relation(fields: [departementId], references: [id])
+
+  matieres  Matiere[]
+
+  @@map("semestre")
+}
+
+model Matiere {
+  id         Int      @id @default(autoincrement())
+  nom        String
+  credit     Int
+  semestreId Int
+  semestre   Semestre @relation(fields: [semestreId], references: [id])
+
+  etudiants AssMatiereEtudiant[]
+
+  @@map("matiere")
+}
+
+model AssMatiereEtudiant {
+  matiereId  Int
+  matiere    Matiere  @relation(fields: [matiereId], references: [id])
+  etudiantId Int
+  etudiant   Etudiant @relation(fields: [etudiantId], references: [id])
+
+  absences Int     @default(0)
+  noteCC   Float?  @map("note_cc")
+  noteSN   Float?  @map("note_sn")
+
+  @@id([matiereId, etudiantId])
+  @@map("ass_matiere_etudiant")
+}
+
+model Dette {
+  id         Int         @id @default(autoincrement())
+  libelle    String
+  montant    Float
+  statut     StatutDette @default(NON_PAYEE)
+  etudiantId Int
+  etudiant   Etudiant    @relation(fields: [etudiantId], references: [id])
+
+  @@map("dette")
+}
+
+model Paiement {
+  id      Int            @id @default(autoincrement())
+  libelle String
+  montant Float
+  statut  StatutPaiement @default(EN_ATTENTE)
+  date    DateTime       @default(now())
+
+  @@map("paiement")
+}
+
+// ==================== ENUMS ====================
+
+enum StatutDette {
+  PAYEE
+  NON_PAYEE
+  PARTIELLE
+}
+
+enum StatutPaiement {
+  EN_ATTENTE
+  VALIDE
+  REFUSE
+}
