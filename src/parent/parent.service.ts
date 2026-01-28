@@ -2,19 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { CreateParentDto } from './dto/create-parent.dto';
 import { UpdateParentDto } from './dto/update-parent.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ParentService {
   constructor(private readonly db: DatabaseService) {}
 
   async create(createParentDto: CreateParentDto) {
+    const hashedPassword = await bcrypt.hash(createParentDto.password, 10);
     return this.db.parent.create({
-      data: createParentDto,
+      data: {
+        ...createParentDto,
+        password: hashedPassword,
+      },
     });
   }
 
   async findAll() {
-    return this.db.parent.findMany({
+    return await this.db.parent.findMany({
       include: {
         etudiants: {
           include: { etudiant: true },
@@ -24,7 +29,7 @@ export class ParentService {
   }
 
   async findOne(id: number) {
-    return this.db.parent.findUnique({
+    return await this.db.parent.findUnique({
       where: { id },
       include: {
         etudiants: {
@@ -35,7 +40,7 @@ export class ParentService {
   }
 
   async update(id: number, updateParentDto: UpdateParentDto) {
-    return this.db.parent.update({
+    return await this.db.parent.update({
       where: { id },
       data: updateParentDto,
     });
