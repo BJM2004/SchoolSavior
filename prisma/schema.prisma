@@ -105,12 +105,27 @@ model Semestre {
   @@map("semestre")
 }
 
+model Professeur {
+  id     Int     @id @default(autoincrement())
+  nom    String
+  prenom String
+  grade  String
+  tel    String?
+  password String
+
+  matieres Matiere[]
+
+  @@map("professeur")
+}
+
 model Matiere {
-  id         Int      @id @default(autoincrement())
-  nom        String
-  credit     Int
-  semestreId Int
-  semestre   Semestre @relation(fields: [semestreId], references: [id])
+  id           Int      @id @default(autoincrement())
+  nom          String
+  credit       Int
+  semestreId   Int
+  semestre     Semestre @relation(fields: [semestreId], references: [id])
+  professeurId Int?
+  professeur   Professeur? @relation(fields: [professeurId], references: [id])
 
   etudiants AssMatiereEtudiant[]
 

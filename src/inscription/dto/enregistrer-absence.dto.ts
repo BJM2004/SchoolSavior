@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class EnregistrerAbsenceDto {
   @IsInt()
@@ -10,7 +10,6 @@ export class EnregistrerAbsenceDto {
   matiereId: number;
 
   @IsInt()
-  @IsNotEmpty()
-  @Min(1)
+  @IsOptional()
   nombreAbsences: number;
 }
