@@ -2,14 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { CreateEtudiantDto } from './dto/create-etudiant.dto';
 import { UpdateEtudiantDto } from './dto/update-etudiant.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class EtudiantService {
   constructor(private readonly db: DatabaseService) {}
 
   async create(createEtudiantDto: CreateEtudiantDto) {
+    const hashedPassword = await bcrypt.hash(createEtudiantDto.password, 10);
     return await this.db.etudiant.create({
-      data: createEtudiantDto,
+      data: {
+        matricule: createEtudiantDto.matricule,
+        nom: createEtudiantDto.nom,
+        prenom: createEtudiantDto.prenom,
+        tel: createEtudiantDto.tel,
+        password: hashedPassword,
+        dateNaissance: new Date(createEtudiantDto.dateNaissance), // <-- Convertir en Date
+        axeId: createEtudiantDto.axeId,
+        departementId: createEtudiantDto.departementId,
+        promotionId: createEtudiantDto.promotionId,
+      },
     });
   }
 

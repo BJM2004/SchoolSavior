@@ -14,7 +14,7 @@ export class PaiementService {
   }
 
   async findAll() {
-    return this.db.paiement.findMany();
+    return await this.db.paiement.findMany();
   }
 
   async findOne(id: number) {

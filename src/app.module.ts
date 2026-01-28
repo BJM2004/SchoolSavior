@@ -12,10 +12,12 @@ import { MatiereModule } from './matiere/matiere.module';
 import { DetteModule } from './dette/dette.module';
 import { PaiementModule } from './paiement/paiement.module';
 import { InscriptionModule } from './inscription/inscription.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    AuthModule,
     PromotionModule,
     DepartementModule,
     AxeModule,
