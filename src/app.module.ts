@@ -13,6 +13,7 @@ import { DetteModule } from './dette/dette.module';
 import { PaiementModule } from './paiement/paiement.module';
 import { InscriptionModule } from './inscription/inscription.module';
 import { AuthModule } from './auth/auth.module';
+import { ProfesseurModule } from './professeur/professeur.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AuthModule } from './auth/auth.module';
     DetteModule,
     PaiementModule,
     InscriptionModule,
+    ProfesseurModule,
   ],
   controllers: [AppController],
   providers: [AppService],

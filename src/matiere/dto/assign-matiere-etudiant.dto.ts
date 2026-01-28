@@ -1,14 +1,14 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 export class AssignMatiereEtudiantDto {
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   absences?: number;
 
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   noteCC?: number;
 
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   noteSN?: number;
 }

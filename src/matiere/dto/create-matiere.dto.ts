@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsInt } from 'class-validator';
+import { IsString, IsNotEmpty, IsInt, IsOptional } from 'class-validator';
 export class CreateMatiereDto {
   @IsString()
   @IsNotEmpty()
@@ -11,4 +11,8 @@ export class CreateMatiereDto {
   @IsInt()
   @IsNotEmpty()
   semestreId: number;
+
+  @IsInt()
+  @IsOptional()
+  professeurId?: number;
 }
